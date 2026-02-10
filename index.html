@@ -201,7 +201,7 @@
       <p class="love-msg">
         I knew you'd say yes! 💕<br><br>
         You just made me the happiest person in the world.
-        Now let's go eat too much chocolate together. 🍫
+        Now let's go eat too much chocolate together. 
       </p>
     </div>
   </div>
@@ -269,9 +269,11 @@
       if (dist > threshold) return;
 
       escapeCount++;
-      // Show sass message
-      sassMsg.textContent = sassMessages[sassIndex % sassMessages.length];
-      sassIndex++;
+      // Show sass message after 2 tries
+      if (escapeCount >= 2) {
+        sassMsg.textContent = sassMessages[sassIndex % sassMessages.length];
+        sassIndex++;
+      }
 
       // Grow the Yes button to be more tempting
       const yesBtn = document.getElementById('yesBtn');
@@ -302,11 +304,6 @@
       noBtn.style.zIndex = '5';
       noBtn.style.transition = 'none';
 
-      // After many escapes, shrink the No button
-      if (escapeCount > 5) {
-        const shrink = Math.max(0.5, 1 - (escapeCount - 5) * 0.07);
-        noBtn.style.transform = `scale(${shrink})`;
-      }
     }
 
     document.addEventListener('mousemove', escapeNo);
