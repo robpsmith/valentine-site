@@ -269,8 +269,8 @@
       if (dist > threshold) return;
 
       escapeCount++;
-      // Show sass message after 2 tries
-      if (escapeCount >= 2) {
+      // Show sass message after 1 try
+      if (escapeCount >= 1) {
         sassMsg.textContent = sassMessages[sassIndex % sassMessages.length];
         sassIndex++;
       }
@@ -280,23 +280,34 @@
       yesGrowth = Math.min(yesGrowth + 0.06, 1.6);
       yesBtn.style.transform = `scale(${yesGrowth})`;
 
-      // Calculate new position within viewport
+      // Move button a short distance away, staying within viewport
       const vw = window.innerWidth;
       const vh = window.innerHeight;
       const bw = btnRect.width;
       const bh = btnRect.height;
-      const margin = 20;
+      const padding = 40;
+
+      const cx = btnRect.left + bw / 2;
+      const cy = btnRect.top + bh / 2;
 
       let newX, newY;
       let attempts = 0;
+      const jumpDist = 120 + Math.random() * 80; // short hop: 120-200px
       do {
-        newX = margin + Math.random() * (vw - bw - margin * 2);
-        newY = margin + Math.random() * (vh - bh - margin * 2);
+        const angle = Math.random() * Math.PI * 2;
+        newX = cx + Math.cos(angle) * jumpDist - bw / 2;
+        newY = cy + Math.sin(angle) * jumpDist - bh / 2;
         attempts++;
       } while (
         attempts < 50 &&
-        Math.hypot(newX + bw/2 - e.clientX, newY + bh/2 - e.clientY) < 150
+        (newX < padding || newY < padding ||
+         newX + bw > vw - padding || newY + bh > vh - padding ||
+         Math.hypot(newX + bw/2 - e.clientX, newY + bh/2 - e.clientY) < 100)
       );
+
+      // Clamp to viewport as a safety net
+      newX = Math.max(padding, Math.min(newX, vw - bw - padding));
+      newY = Math.max(padding, Math.min(newY, vh - bh - padding));
 
       noBtn.style.position = 'fixed';
       noBtn.style.left = newX + 'px';
