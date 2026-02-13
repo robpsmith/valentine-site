@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Very Important Question</title>
+  <title>EXTREMELY URGENT: A Very Important Question</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;700&display=swap');
 
@@ -60,15 +60,32 @@
     }
 
     @keyframes cardEntrance {
-      0% { transform: scale(0.3) rotate(-8deg); opacity: 0; }
+      0% { transform: scale(0.3) rotate(-5deg); opacity: 0; }
+      70% { transform: scale(1.05) rotate(1deg); opacity: 1; }
       100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .card:hover {
+      animation: wiggle 0.3s ease-in-out;
+    }
+
+    @keyframes wiggle {
+      0% { transform: rotate(0deg); }
+      50% { transform: rotate(1.5deg); }
+      100% { transform: rotate(0deg); }
     }
 
     .big-heart {
       font-size: 80px;
-      animation: heartbeat 1.2s ease-in-out infinite;
+      animation: heartbeat 1.2s ease-in-out infinite, sideToSide 2s ease-in-out infinite;
       display: inline-block;
       filter: drop-shadow(0 4px 12px rgba(233, 30, 99, 0.4));
+      cursor: grab;
+    }
+
+    @keyframes sideToSide {
+      0%, 100% { margin-left: 0; }
+      50% { margin-left: 10px; }
     }
 
     @keyframes heartbeat {
@@ -123,6 +140,12 @@
     .btn-yes:hover {
       transform: scale(1.08);
       box-shadow: 0 8px 32px rgba(233, 30, 99, 0.5);
+      animation: pulseYes 0.3s ease-in-out infinite alternate;
+    }
+
+    @keyframes pulseYes {
+      from { transform: scale(1.06); }
+      to { transform: scale(1.14); }
     }
 
     .btn-no {
@@ -131,6 +154,16 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
       position: relative;
       user-select: none;
+      transition: transform 0.3s, opacity 0.3s, font-size 0.3s;
+    }
+
+    .btn-no.panicking {
+      animation: noPanic 0.15s ease-in-out infinite alternate;
+    }
+
+    @keyframes noPanic {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
     }
 
     /* Yes screen */
@@ -141,13 +174,24 @@
     }
 
     .yes-screen .celebration {
-      font-size: 64px;
-      animation: heartbeat 1.2s ease-in-out infinite;
+      font-size: 80px;
+      animation: heartbeat 1.2s ease-in-out infinite, spinIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes spinIn {
+      0% { transform: scale(0) rotate(-720deg); opacity: 0; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
     }
 
     .yes-screen h1 {
       font-size: 2.5rem;
       margin: 16px 0;
+      animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0) translateY(40px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
     }
 
     .yes-screen .love-msg {
@@ -155,6 +199,7 @@
       font-size: 1.2rem;
       line-height: 1.6;
       max-width: 360px;
+      animation: bounceIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s both;
     }
 
     /* Confetti canvas */
@@ -174,6 +219,15 @@
       min-height: 24px;
       transition: opacity 0.3s;
     }
+
+    .sass-msg.pop {
+      animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
   </style>
 </head>
 <body>
@@ -184,11 +238,11 @@
   <div class="card" id="card">
     <!-- Question screen -->
     <div id="questionScreen">
-      <div class="big-heart">💖</div>
+      <div class="big-heart" id="bigHeart" onclick="heartClick()">💖</div>
       <h1>Dear Cami, Will You Be My Valentine?</h1>
-      <p class="subtitle">This is a very important question. Choose wisely.</p>
+      <p class="subtitle">This is a CRITICALLY important, EXTREMELY urgent question. No pressure.</p>
       <div class="buttons">
-        <button class="btn btn-yes" id="yesBtn" onclick="sayYes()">Yes!</button>
+        <button class="btn btn-yes" id="yesBtn" onclick="sayYes()">Yes! Obviously!</button>
         <button class="btn btn-no" id="noBtn">No</button>
       </div>
       <p class="sass-msg" id="sassMsg">&nbsp;</p>
@@ -197,12 +251,13 @@
     <!-- Yes screen -->
     <div class="yes-screen" id="yesScreen">
       <div class="celebration">🥰</div>
-      <h1>Yaaaay!</h1>
+      <h1>YAAAAY!!!</h1>
       <p class="love-msg">
-        I knew you'd say yes! 💕<br><br>
-        You just made me the happiest person in the world.
-        6PM Reservations are no longer canceled our romantic dinner at the Putnum Room.
+        I knew you'd say yes! Was there ever really a doubt?! 💕<br><br>
+        You just made me the happiest person in the ENTIRE universe (and possibly adjacent universes).
+        6PM Reservations are no longer canceled for our romantic dinner at the Putnum Room.
         Can't wait to spend the day with you! <br><br>
+        (The "No" button never stood a chance.)
       </p>
     </div>
   </div>
@@ -223,7 +278,7 @@
       heartsBg.appendChild(el);
       setTimeout(() => el.remove(), dur * 1000);
     }
-    setInterval(spawnHeart, 400);
+    const heartInterval = setInterval(spawnHeart, 400);
     for (let i = 0; i < 12; i++) setTimeout(spawnHeart, i * 200);
 
     // ── No button escape logic ──
@@ -237,20 +292,52 @@
       "You can't catch me! 🏃‍♂️",
       "Wrong answer, try again!",
       "That button is off limits! 🚫",
-      "Haha, too slow!",
+      "Haha, too slow! I trained for this.",
       "The only option is Yes 💖",
       "I don't think so! 😜",
-      "Almost! ...not really 😂",
+      "Almost! ...lol no not really 😂",
       "You sure about that? 🤨",
-      "My reflexes are too fast!",
-      "Error 404: No not found",
+      "My reflexes are ELITE!",
+      "Error 404: 'No' not found",
       "That's not very valentine of you",
       "I'll keep running forever! 🏃‍♀️",
+      "I'm literally begging you to press Yes",
+      "The No button is SCARED of you",
+      "This button has places to be!",
+      "You're making this harder than it needs to be",
+      "Just click Yes! The button is RIGHT THERE!",
+      "I can do this all day 💪",
+      "Plot twist: you were always going to say Yes",
+      "The No button filed a restraining order",
     ];
 
     let sassIndex = 0;
     let escapeCount = 0;
     let yesGrowth = 1;
+    let noShrink = 1;
+
+    // Heart click easter egg
+    const heartClickMessages = [
+      "💖 You clicked the heart! Now click Yes!",
+      "💗 That tickles! But seriously, click Yes.",
+      "💘 I appreciate the love, but the Yes button is down there!",
+      "💝 Okay okay, I feel the love. YES BUTTON. PLEASE.",
+      "💞 We get it, you like hearts. CLICK. YES.",
+    ];
+    let heartClickCount = 0;
+    function heartClick() {
+      const heart = document.getElementById('bigHeart');
+      heart.style.animation = 'none';
+      heart.offsetHeight;
+      heart.style.animation = 'heartbeat 1.2s ease-in-out infinite, sideToSide 2s ease-in-out infinite';
+      heart.style.transform = 'scale(1.3) rotate(' + (Math.random() * 40 - 20) + 'deg)';
+      setTimeout(() => heart.style.transform = '', 300);
+      sassMsg.textContent = heartClickMessages[Math.min(heartClickCount, heartClickMessages.length - 1)];
+      sassMsg.classList.remove('pop');
+      sassMsg.offsetHeight;
+      sassMsg.classList.add('pop');
+      heartClickCount++;
+    }
 
     function getDistance(r1, r2) {
       const cx1 = r1.left + r1.width / 2;
@@ -273,42 +360,69 @@
       // Show sass message after 1 try
       if (escapeCount >= 1) {
         sassMsg.textContent = sassMessages[sassIndex % sassMessages.length];
+        sassMsg.classList.remove('pop');
+        sassMsg.offsetHeight;
+        sassMsg.classList.add('pop');
         sassIndex++;
       }
 
       // Grow the Yes button to be more tempting
       const yesBtn = document.getElementById('yesBtn');
-      yesGrowth = Math.min(yesGrowth + 0.06, 1.6);
+      yesGrowth = Math.min(yesGrowth + 0.08, 2.0);
       yesBtn.style.transform = `scale(${yesGrowth})`;
 
-      // Move button a short distance away, staying within viewport
-      const vw = window.innerWidth;
-      const vh = window.innerHeight;
+      // Shrink the No button - it's scared!
+      noShrink = Math.max(noShrink - 0.06, 0.4);
+      noBtn.style.transform = `scale(${noShrink})`;
+      noBtn.style.opacity = Math.max(0.4, noShrink);
+
+      // Make No button start panicking after a few escapes
+      if (escapeCount >= 3) {
+        noBtn.classList.add('panicking');
+      }
+
+      // Change No button text as it panics
+      if (escapeCount === 3) noBtn.textContent = "No?";
+      if (escapeCount === 5) noBtn.textContent = "no...";
+      if (escapeCount === 8) noBtn.textContent = "pls stop";
+      if (escapeCount === 11) noBtn.textContent = "help";
+      if (escapeCount === 14) noBtn.textContent = "okay fine";
+      if (escapeCount >= 16) { noBtn.textContent = "..."; }
+
+      // Move button a short distance away, staying near the card
+      const cardRect = card.getBoundingClientRect();
       const bw = btnRect.width;
       const bh = btnRect.height;
-      const padding = 40;
+      const margin = 20;
 
-      const cx = btnRect.left + bw / 2;
-      const cy = btnRect.top + bh / 2;
+      // Keep the No button within a box around the card
+      const bounds = {
+        left: cardRect.left - 60,
+        top: cardRect.top - 40,
+        right: cardRect.right + 60,
+        bottom: cardRect.bottom + 40,
+      };
 
       let newX, newY;
       let attempts = 0;
-      const jumpDist = 120 + Math.random() * 80; // short hop: 120-200px
+      const jumpDist = 60 + Math.random() * 60; // short hop: 60-120px
       do {
         const angle = Math.random() * Math.PI * 2;
-        newX = cx + Math.cos(angle) * jumpDist - bw / 2;
-        newY = cy + Math.sin(angle) * jumpDist - bh / 2;
+        const fromX = btnRect.left + bw / 2;
+        const fromY = btnRect.top + bh / 2;
+        newX = fromX + Math.cos(angle) * jumpDist - bw / 2;
+        newY = fromY + Math.sin(angle) * jumpDist - bh / 2;
         attempts++;
       } while (
         attempts < 50 &&
-        (newX < padding || newY < padding ||
-         newX + bw > vw - padding || newY + bh > vh - padding ||
-         Math.hypot(newX + bw/2 - e.clientX, newY + bh/2 - e.clientY) < 100)
+        (newX < bounds.left || newY < bounds.top ||
+         newX + bw > bounds.right || newY + bh > bounds.bottom ||
+         Math.hypot(newX + bw/2 - e.clientX, newY + bh/2 - e.clientY) < 80)
       );
 
-      // Clamp to viewport as a safety net
-      newX = Math.max(padding, Math.min(newX, vw - bw - padding));
-      newY = Math.max(padding, Math.min(newY, vh - bh - padding));
+      // Clamp to the card neighborhood
+      newX = Math.max(bounds.left, Math.min(newX, bounds.right - bw));
+      newY = Math.max(bounds.top, Math.min(newY, bounds.bottom - bh));
 
       noBtn.style.position = 'fixed';
       noBtn.style.left = newX + 'px';
@@ -330,7 +444,14 @@
       document.getElementById('yesScreen').style.display = 'flex';
       noBtn.style.display = 'none';
       sassMsg.textContent = '';
+      // Triple confetti burst for maximum celebration
       launchConfetti();
+      setTimeout(() => launchConfetti(), 600);
+      setTimeout(() => launchConfetti(), 1200);
+      // Speed up the hearts
+      clearInterval(heartInterval);
+      for (let i = 0; i < 30; i++) setTimeout(spawnHeart, i * 50);
+      setInterval(spawnHeart, 150);
     }
 
     // ── Confetti ──
